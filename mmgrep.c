@@ -35,18 +35,20 @@ int main(int argc, char **argv) {
         }
         if (-1 == fstat(fd, &st)) {
             perror("fstat");
-            continue;
+            goto end2;
         }
         void *haystack = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE|MAP_POPULATE, fd, 0);
         if (!haystack) {
             perror("mmap");
-            continue;
+            goto end1;
         }
         void *found = memmem(haystack, st.st_size, bytes, blen);
         if (found) {
             printf("%s: %#tx\n", argv[i], found - haystack);
         }
+end1:
         munmap(haystack, st.st_size);
+end2:
         close(fd);
     }
     return 0;
