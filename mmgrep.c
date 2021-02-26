@@ -20,9 +20,17 @@ int main(int argc, char **argv) {
     }
     size_t blen = strlen(argv[1]) / 2;
     uint8_t *bytes = malloc(blen);
+    if (!bytes) {
+        perror("malloc");
+        fprintf(stderr, "Here's a nickel kid, go buy yourself enough RAM to hold %zu bytes\n", blen);
+        exit(1);
+    }
     char *pos = argv[1];
     for (size_t count = 0; count < blen; count++) {
-        sscanf(pos, "%2hhx", &bytes[count]);
+        if (1 != sscanf(pos, "%2hhx", &bytes[count])) {
+            fprintf(stderr, "invalid hex string: %s\n", argv[1]);
+            exit(1);
+        }
         pos += 2;
     }
 
