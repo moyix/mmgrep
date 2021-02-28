@@ -50,9 +50,11 @@ int main(int argc, char **argv) {
             perror("mmap");
             goto end1;
         }
-        void *found = memmem(haystack, st.st_size, bytes, blen);
-        if (found) {
+        void *hayp = haystack;
+        void *found;
+        while (found = memmem(hayp, haystack+st.st_size-hayp, bytes, blen)) {
             printf("%s: %#tx\n", argv[i], found - haystack);
+            hayp = found+1;
         }
 end1:
         munmap(haystack, st.st_size);
